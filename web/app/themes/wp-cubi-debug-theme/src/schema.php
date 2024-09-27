@@ -46,12 +46,27 @@ function register_post_type_event()
             'registrations' => ['title' => 'Registrations', 'sortable' => false, 'function' => function () {
                 global $post;
                 global $wpdb;
-                $sql_query = $wpdb->prepare("SELECT COUNT(`post_id`) as count FROM %i WHERE `meta_key` = 'registration_event_id' AND `meta_value` = %d", $wpdb->postmeta, $post_id);
+
+                $sql_query = $wpdb->prepare(
+                    "SELECT COUNT(`post_id`) as count 
+                    FROM {$wpdb->postmeta} 
+                    WHERE `meta_key` = 'registration_event_id' 
+                    AND `meta_value` = %d", 
+                    $post->ID
+                );
+
                 $result = $wpdb->get_row($sql_query, ARRAY_A);
-                echo $result['count'];
+                echo isset($result['count']) ? $result['count'] : 0;
+            }],
+
+            // Adding the export button here
+            'export' => ['title' => 'Export', 'function' => function () {
+                global $post;
+                $export_url = admin_url('admin-post.php?action=export_registrations&event_id=' . $post->ID);
+                echo '<a href="' . esc_url($export_url) . '" class="button">Export</a>';
             }],
         ],
-        'admin_filters'        => [],
+        'admin_filters'=> [],
     ];
 
     $names = [
@@ -67,9 +82,9 @@ function register_post_type_registration()
 {
     $args = [
         'hierarchical'        => false,
-        'public'              => true,
+        'public'              => false,
         'exclude_from_search' => true,
-        'publicly_queryable'  => true,
+        'publicly_queryable'  => false,
         'show_ui'             => true,
         'show_in_menu'        => true,
         'show_in_nav_menus'   => false,

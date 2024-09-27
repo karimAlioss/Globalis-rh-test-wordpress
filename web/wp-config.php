@@ -2,6 +2,10 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_DISPLAY', false);
+
 if (!defined('WP_CUBI_CONFIG')) {
     define('WP_CUBI_CONFIG', require __DIR__ . '/../config/vars.php');
 }
